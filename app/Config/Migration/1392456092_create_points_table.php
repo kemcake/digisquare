@@ -66,7 +66,7 @@ class CreatePointsTable extends CakeMigration {
 		),
 		'down' => array(
 			'drop_table' => array(
-					'rules'
+					'points'
 				),
 		),
 	);
