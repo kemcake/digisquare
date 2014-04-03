@@ -185,26 +185,25 @@ class Event extends AppModel {
 
 	public function afterSave($created, $options = Array()) {
 		if ($created) {
-			debug($this->data['Event']['id']);
 			
-			$this->loadModel('Rule');
-			$this->loadModel('Point');
+			$this->Rule = ClassRegistry::init('Rule');
+			$this->Point = ClassRegistry::init('Point');
 			
 			$optionRules = array('conditions' => array(
 				'Rule.model = \'Event\'',
 				'Rule.action = \'Ajouter\''
 			));
 			$rules = $this->Rule->find('first', $optionRules);
-			
+						
 			$points = array(
 				'Point' => array(
-					'user_id' => $this->Auth->user('id'),
-					'rule_id' => $rules['id'],
+					'user_id' => CakeSession::read("Auth.User.id"),
+					'rule_id' => $rules['Rule']['id'],
 					'foreign_key' => $this->data['Event']['id'],
-					'points' => $rules['points'],
-					'badge_id' => $rules['badge_id']
+					'points' => $rules['Rule']['points'],
+					'badge_id' => $rules['Rule']['badge_id']
 				)
-			);
+			);			
 			$this->Point->save($points);
 		}
 	}
