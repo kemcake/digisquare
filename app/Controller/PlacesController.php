@@ -29,6 +29,16 @@ class PlacesController extends AppController {
 		$this->set('places', $this->Paginator->paginate());
 	}
 
+	public function feed(){
+		$places = $this->Place->find('all', array(
+			'contain' => array(),
+			'limit' => 10,
+			'order' => array('Place.created' => 'DESC'),
+		));
+		$this->set(compact('places'));
+		$this->RequestHandler->renderAs($this, 'rss');
+	}
+
 	public function view($id = null) {
 		if (!$this->Place->exists($id)) {
 			throw new NotFoundException(__('Invalid place'));
@@ -85,34 +95,30 @@ class PlacesController extends AppController {
 	}
 
 	public function top() {
-		$places = $this->Place->find('all', array(
-				'fields' => array(
-								'count(Event.place_id) AS count',
-								'Place.id',
-								'Edition.name',
-								'Place.name',
-								'Place.created',
-								'Place.modified'
-				),
-				'conditions' => 'Event.end_at > NOW()',
-				'limit' => 10,
-				'joins' => array(
-							array(
-								'table' => 'events',
-								'alias' => 'Event',
-								'conditions' => 'Event.place_id = Place.id'
-							),
-							array(
-								'table' => 'editions',
-								'alias' => 'City',
-								'conditions' => 'City.id = Place.edition_id'
-							)
-				),
-				'group' => 'Place.id',
-				'order' => 'count DESC'
-			)
-		);
-		$this->set('places', $places);
+		$places = $this->Place->Event->find('all', array(
+			'fields' => array(
+				'count(Event.place_id) AS count',
+				'Place.id',
+				'Edition.name',
+				'Place.name',
+				'Place.created',
+				'Place.modified'
+			),
+			'conditions' => 'Event.end_at > NOW()',
+			'limit' => 10,
+			'contain' => array('Place'),
+			'group' => 'Event.place_id',
+			'order' => array('count' => 'DESC')
+		));
+		$this->set(compact('places'));
 	}
-
+	
+	public function organizations($id = null) {
+		if (!$this->Place->exists($id)) {
+			throw new NotFoundException(__('Invalid place'));
+		}
+		$organizations = $this->Paginator->paginate('Organization', array('Organization.place_id' => $id));	
+		$this->set(compact('organizations'));
+	}
+	
 }

@@ -8,6 +8,23 @@ class EditionsController extends AppController {
 		$this->set('editions', $this->Paginator->paginate());
 	}
 
+	public function feed($id = null) {
+		if (!$this->Edition->exists($id)) {
+			throw new NotFoundException(__('Invalid edition'));
+		}
+		$edition = $this->Edition->find('first', array(
+			'contain' => array(
+				'Event' => array(
+					'limit' => 10,
+					'order' => array('Event.created' => 'DESC'),
+				),
+			),
+			'conditions' => array('id' => $id)
+		));
+		$this->set(compact('edition'));
+		$this->RequestHandler->renderAs($this, 'rss');
+	}
+
 	public function view($id = null) {
 		if (!$this->Edition->exists($id)) {
 			throw new NotFoundException(__('Invalid edition'));
@@ -63,35 +80,37 @@ class EditionsController extends AppController {
 		if (!$this->Edition->exists($id)) {
 			throw new NotFoundException(__('Invalid edition'));
 		}
-		$organizations = $this->Edition->Organization->find('all', array(
-			'conditions' => array('Organization.edition_id' => $id)
+		$organizations = $this->Paginator->paginate('Organization', array(
+			'Organization.edition_id' => $id
 		));
 		$this->set(compact('organizations'));
-		$this->set('organization', $this->Paginator->paginate());
 	}
 
 	public function top() {
-		$editions = $this->Edition->find('all', array(
-				'fields' => array(
-						'count(Event.edition_id) AS count',
-						'Edition.id',
-						'Edition.name',
-						'Edition.created',
-						'Edition.modified'
-				),
-				'joins' => array(
-						array(
-							'table' => 'events',
-							'alias' => 'Event',
-							'conditions' => 'Event.edition_id = Edition.id'
-						)
-				),
-				'conditions' => 'Event.end_at > NOW()',
-				'group' => 'Edition.id',
-				'order' => 'count DESC',			
-				'limit' => 10
-			));
-		$this->set('editions', $editions);
+		$editions = $this->Edition->Event->find('all', array(
+			'fields' => array(
+				'count(Event.edition_id) AS count',
+				'Edition.id',
+				'Edition.name',
+				'Edition.created',
+				'Edition.modified'
+			),
+			'contain' => array('Event'),
+			'conditions' => 'Event.end_at > NOW()',
+			'group' => 'Edition.id',
+			'order' => 'count DESC',			
+			'limit' => 10
+		));
+		$this->set(compact('editions'));
 	}
 
+	public function places($id = null) {
+		if (!$this->Edition->exists($id)) {
+			throw new NotFoundException(__('Invalid edition'));
+		}
+		$places = $this->Paginator->paginate('Place', array(
+			'Place.edition_id' => $id
+		));
+		$this->set(compact('places'));
+	}
 }
