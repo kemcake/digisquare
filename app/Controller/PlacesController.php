@@ -3,6 +3,27 @@ App::uses('AppController', 'Controller');
 
 class PlacesController extends AppController {
 
+
+	
+	public function join($id = null)
+	{
+		if (!$this->Place->exists($id)) {
+			throw new NotFoundException(__('Invalid place'));
+		}
+		$relationship = array(
+			'Relationship' => array(
+				'model' => 'Place',
+				'foreign_key' => $id,
+				'user_id' => $this=>Auth=>user('id')
+			)
+		);
+		
+		
+		
+		
+	}
+	
+	
 	public function index() {
 		$this->Place->recursive = 0;
 		$this->set('places', $this->Paginator->paginate());
