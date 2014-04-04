@@ -9,6 +9,11 @@ Router::connect('/auth/*',					array('plugin' => 'Opauth', 'controller' => 'opau
 Router::connect('/opauth-complete/*',		array('controller' => 'authentications', 'action' => 'callback'));
 
 /**
+* Gamification Routing
+*/
+Router::connect('/gamification',	array('plugin' => 'Gamification', 'controller' => 'badges', 'action' => 'index'));
+
+/**
  * App Routing
  */
 Router::connect('/:controller',				array('action' => 'index'));

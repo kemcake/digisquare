@@ -5,6 +5,7 @@ Cache::config('default', array('engine' => 'File'));
 CakePlugin::load('BoostCake');
 CakePlugin::load('Migrations');
 CakePlugin::load('Opauth', array('bootstrap' => true));
+CakePlugin::load('Gamification', array('bootstrap' => false, 'routes' => true));
 
 Configure::write('Dispatcher.filters', array(
 	'AssetDispatcher',
@@ -50,3 +51,4 @@ if (isset($_SERVER) && isset($_SERVER['DIGI_MEETUP_KEY'])) {
 		'scope' => 'ageless',
 	));
 }
+
