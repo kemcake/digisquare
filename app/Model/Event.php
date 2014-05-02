@@ -10,11 +10,26 @@ App::uses('AppModel', 'Model');
  */
 class Event extends AppModel {
 
+	public $actsAs = array('Gamification.Gamificable' => array(
+            'rules' => array(
+            	array(
+            		'action' => 'Add',
+            		'points' => 20,
+            		'occurence' => 1
+            	),
+            	array(
+            		'action' => 'Edit',
+            		'points' => 10,
+            		'occurence' => 1
+            	)
+            )
+        ));
+
 /**
  * Validation rules
  *
  * @var array
- */
+ */ 	
 	public $validate = array(
 		'edition_id' => array(
 			'numeric' => array(
@@ -184,27 +199,6 @@ class Event extends AppModel {
 	);
 
 	public function afterSave($created, $options = Array()) {
-		if ($created) {
-			
-			$this->Rule = ClassRegistry::init('Rule');
-			$this->Point = ClassRegistry::init('Point');
-			
-			$optionRules = array('conditions' => array(
-				'Rule.model = \'Event\'',
-				'Rule.action = \'Ajouter\''
-			));
-			$rules = $this->Rule->find('first', $optionRules);
-						
-			$points = array(
-				'Point' => array(
-					'user_id' => CakeSession::read("Auth.User.id"),
-					'rule_id' => $rules['Rule']['id'],
-					'foreign_key' => $this->data['Event']['id'],
-					'points' => $rules['Rule']['points'],
-					'badge_id' => $rules['Rule']['badge_id']
-				)
-			);			
-			$this->Point->save($points);
-		}
+		
 	}
 }

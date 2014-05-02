@@ -9,6 +9,20 @@ App::uses('AppModel', 'Model');
  */
 class Place extends AppModel {
 
+	public $actsAs = array('Gamification.Gamificable' => array(
+            'rules' => array(
+            	array(
+            		'action' => 'Add',
+            		'points' => 20,
+            		'occurence' => 1
+            	),
+            	array(
+            		'action' => 'Edit',
+            		'points' => 10,
+            		'occurence' => 1
+            	)
+            )
+        ));
 /**
  * Validation rules
  *
