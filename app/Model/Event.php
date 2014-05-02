@@ -28,7 +28,8 @@ class Event extends AppModel {
             		'occurence' => 1
             	)
             )
-        ));
+	    )
+    );
 
 /**
  * Validation rules
