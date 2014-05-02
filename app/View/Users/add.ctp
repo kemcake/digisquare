@@ -19,7 +19,8 @@
 			?>
 			<div class="form-group">
 				<div class="col col-md-9 col-md-offset-3">
-					<?php echo $this->Form->submit('Submit', array(
+
+					<?php echo $this->Form->submit('Save changes', array(
 						'class' => 'btn btn-primary'
 					)); ?>
 				</div>

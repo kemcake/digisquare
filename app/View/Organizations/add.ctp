@@ -1,5 +1,5 @@
 <div role="main">
-	<div class="startups form">
+	<div class="organizations form">
 		<h1><?php echo __('Add Organization'); ?></h1>
 		<?php echo $this->Form->create('Organization', array(
 			'inputDefaults' => array(
@@ -20,7 +20,8 @@
 			?>
 			<div class="form-group">
 				<div class="col col-md-9 col-md-offset-3">
-					<?php echo $this->Form->submit('Submit', array(
+
+					<?php echo $this->Form->submit('Save changes', array(
 						'class' => 'btn btn-primary'
 					)); ?>
 				</div>
