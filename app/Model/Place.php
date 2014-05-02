@@ -20,6 +20,11 @@ class Place extends AppModel {
             		'action' => 'Edit',
             		'points' => 10,
             		'occurence' => 1
+            	),
+            	array(
+            		'action' => 'Delete',
+            		'points' => 5,
+            		'occurence' => 1
             	)
             )
         ));

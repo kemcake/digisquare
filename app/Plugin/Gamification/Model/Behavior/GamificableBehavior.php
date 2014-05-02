@@ -66,6 +66,32 @@ class GamificableBehavior extends ModelBehavior {
 				$this->Point->save($points);
 			}
 	}
+	
+	public function afterDelete(Model $Model) {
+			$action = 'Delete';
+			
+			$this->Rule = ClassRegistry::init('Rule');
+			$this->Point = ClassRegistry::init('Point');
+			
+			$optionRules = array('conditions' => array(
+				'Rule.model = \''.$Model->alias.'\'',
+				'Rule.action = \''.$action.'\''
+			));
+			$rules = $this->Rule->find('first', $optionRules);
+				
+			if($rules) {	
+				$points = array(
+					'Point' => array(
+						'user_id' => CakeSession::read("Auth.User.id"),
+						'rule_id' => $rules['Rule']['id'],
+						'foreign_key' => $Model->data[$Model->alias]['id'],
+						'points' => $rules['Rule']['points'],
+						'badge_id' => $rules['Rule']['badge_id']
+					)
+				);
+				$this->Point->save($points);
+			}
+	}
 }
 
 
